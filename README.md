@@ -239,10 +239,10 @@ source venv/bin/activate
 pip install flask
 ```
 
-If a `requirements.txt` file is added later, dependencies can instead be installed using:
+If pip is not recognized, use:
 
 ```bash
-pip install -r requirements.txt
+python -m pip install flask
 ```
 
 ---
