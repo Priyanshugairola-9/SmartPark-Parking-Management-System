@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>SmartPark Admin · Parking Management System</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/admin.css"/>
+  <script>
+    (function(){
+      var t=localStorage.getItem('sp-theme')||'dark';
+      document.documentElement.setAttribute('data-theme',t);
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ══ LOGIN SCREEN (shown when logged out) ══════════════ -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo-mark">P</div>
+      </div>
+      <h1 class="login-title">Admin Access</h1>
+      <p class="login-sub">SmartPark · Parking Management System</p>
+
+      <div class="login-form">
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <div class="input-wrap">
+            <input type="password" id="passwordInput" class="password-input"
+              placeholder="Enter admin password" maxlength="20" autocomplete="current-password"/>
+            <button class="eye-btn" id="eyeBtn" title="Show/hide">
+              <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="login-error" id="loginError"></div>
+        <button class="login-btn" id="loginBtn">
+          <span id="loginBtnText">Sign In</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <a href="/" class="back-link">← Back to public view</a>
+    </div>
+  </div>
+
+  <!-- ══ ADMIN DASHBOARD (shown when logged in) ════════════ -->
+  <div class="dashboard" id="dashboard" style="display:none">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">P</div>
+        <div>
+          <div class="sidebar-brand">SmartPark</div>
+          <div class="sidebar-role">Admin Dashboard</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="overview">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
+        </button>
+        <button class="nav-item" data-tab="layout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg>
+          Layout & Spots
+        </button>
+        <button class="nav-item" data-tab="sensors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Sensors / Simulate
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="/" target="_blank" class="view-public-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Public Page
+        </a>
+        <button class="theme-toggle-row" id="themeToggle">
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <span class="theme-toggle-label">Toggle Theme</span>
+        </button>
+        <button class="logout-btn" id="logoutBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <div class="mobile-topbar">
+      <button class="burger" id="burgerBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="mobile-brand">SmartPark Admin</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="theme-toggle" id="themeToggleMobile" title="Toggle theme">
+          <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun"  width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button class="logout-btn-mobile" id="logoutBtnMobile">Logout</button>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="content" id="content">
+
+      <!-- ── TAB: OVERVIEW ─────────────────────────────────── -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="page-header">
+          <h1 class="page-title">Overview</h1>
+          <span class="page-subtitle">Real-time parking statistics</span>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-total">
+            <div class="kpi-icon">🏢</div>
+            <div class="kpi-val" id="kpi-total">—</div>
+            <div class="kpi-label">Total Spots</div>
+          </div>
+          <div class="kpi-card kpi-avail">
+            <div class="kpi-icon">✅</div>
+            <div class="kpi-val" id="kpi-avail">—</div>
+            <div class="kpi-label">Available</div>
+          </div>
+          <div class="kpi-card kpi-occ">
+            <div class="kpi-icon">🚗</div>
+            <div class="kpi-val" id="kpi-occ">—</div>
+            <div class="kpi-label">Occupied</div>
+          </div>
+          <div class="kpi-card kpi-pct">
+            <div class="kpi-icon">📊</div>
+            <div class="kpi-val" id="kpi-pct">—</div>
+            <div class="kpi-label">Occupancy Rate</div>
+          </div>
+        </div>
+
+        <div class="overview-map-wrap">
+          <div class="card-header">
+            <span>Live Map Preview</span>
+            <span class="live-chip"><span class="chip-dot"></span>LIVE</span>
+          </div>
+          <div class="mini-map" id="miniMap">
+            <div class="mini-map-empty" id="miniMapEmpty">No layout uploaded yet</div>
+            <div class="mini-map-canvas" id="miniMapCanvas" style="display:none">
+              <img class="mini-img" id="miniImg" src="" alt=""/>
+              <!-- markers -->
+            </div>
+          </div>
+        </div>
+
+        <div class="spot-table-wrap">
+          <div class="card-header"><span>Spot Status Table</span></div>
+          <div class="spot-table-scroll">
+            <table class="spot-table" id="spotTable">
+              <thead>
+                <tr><th>Spot ID</th><th>Label</th><th>Position</th><th>Status</th></tr>
+              </thead>
+              <tbody id="spotTableBody">
+                <tr><td colspan="4" class="table-empty">No spots defined</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: LAYOUT & SPOTS ───────────────────────────── -->
+      <div class="tab-panel" id="tab-layout">
+        <div class="page-header">
+          <h1 class="page-title">Layout & Spots</h1>
+          <span class="page-subtitle">Upload map · place spot markers</span>
+        </div>
+
+        <!-- Step 1: Upload -->
+        <div class="setup-card">
+          <div class="setup-step-head">
+            <span class="step-num">1</span>
+            <div>
+              <h3>Upload Parking Layout Image</h3>
+              <p>JPG, PNG or WebP — up to 25 MB. Your AutoCAD export, blueprint, or photo.</p>
+            </div>
+          </div>
+
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp" hidden/>
+            <div class="upload-zone-inner" id="uploadZoneInner">
+              <div class="upload-ico">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+              </div>
+              <div class="upload-text">
+                <strong>Click to upload</strong> or drag & drop
+                <span>PNG, JPG, WebP up to 25MB</span>
+              </div>
+            </div>
+          </div>
+          <div class="upload-preview" id="uploadPreview" style="display:none">
+            <img id="previewImg" src="" alt=""/>
+            <div>
+              <div class="preview-name" id="previewName"></div>
+              <button class="btn-outline-sm" id="changeImgBtn">Change image</button>
+            </div>
+          </div>
+
+          <div class="upload-actions">
+            <button class="btn-primary" id="uploadBtn" disabled>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+              Upload Layout
+            </button>
+            <button class="btn-danger-outline" id="deleteLayoutBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              Delete Layout
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Place Spots -->
+        <div class="setup-card" id="spotEditorCard">
+          <div class="setup-step-head">
+            <span class="step-num">2</span>
+            <div>
+              <h3>Place Parking Spots on Map</h3>
+              <p>Enable <strong>Add Mode</strong>, then click on the map image where each parking spot is. Edit the label, then <strong>Save All Spots</strong>.</p>
+            </div>
+          </div>
+
+          <div class="spot-toolbar">
+            <button class="btn-toggle" id="addModeBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Mode
+            </button>
+            <button class="btn-outline-sm" id="undoLastBtn">↩ Undo Last</button>
+            <button class="btn-outline-sm danger" id="clearAllBtn">🗑 Clear All</button>
+            <button class="btn-primary" id="saveSpotsBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save All Spots
+            </button>
+          </div>
+
+          <div class="editor-map-wrap">
+            <div class="no-layout-msg" id="noLayoutMsg">Upload a layout image first ↑</div>
+            <div class="editor-canvas" id="editorCanvas" style="display:none">
+              <img class="editor-img" id="editorImg" src="" alt="Parking Layout"/>
+              <!-- markers injected -->
+            </div>
+          </div>
+
+          <div class="spots-count-row">
+            <span id="pendingCount">0 spots defined</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: SENSORS / SIMULATE ───────────────────────── -->
+      <div class="tab-panel" id="tab-sensors">
+        <div class="page-header">
+          <h1 class="page-title">Sensor Simulation</h1>
+          <span class="page-subtitle">Toggle spots manually · connect IoT sensors via API</span>
+        </div>
+
+        <div class="api-info-card">
+          <div class="api-info-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            IoT Sensor Integration
+          </div>
+          <p>Connect your Arduino/ESP8266/ESP32 or Raspberry Pi sensor to this endpoint:</p>
+          <code class="api-endpoint">POST /api/admin/toggle/&lt;spot_id&gt;</code>
+          <p>Include the admin session cookie or set up a token-based auth in production.</p>
+        </div>
+
+        <div class="sensor-card">
+          <div class="card-header">
+            <span>Manual Toggle (Simulator)</span>
+            <button class="btn-outline-sm" id="resetAllBtn">↺ Reset All Available</button>
+          </div>
+          <div class="sensor-grid" id="sensorGrid">
+            <div class="sensor-empty">No spots defined. Go to <strong>Layout & Spots</strong> tab first.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /dashboard -->
+
+  <!-- ══ TOAST ═════════════════════════════════════════════ -->
+  <div class="toast" id="toast"></div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>
