@@ -296,6 +296,7 @@ Default password:
 ```text
 12345
 ```
+Security Note: SmartPark currently uses a configurable local administrator password and Flask session-based authentication. The default password is provided for development/testing and should be changed before use. For production deployment, environment variables, password hashing, HTTPS, and stronger authentication should be implemented.
 
 **Important:** This is a development configuration. The password is currently defined inside `app.py`.
 
