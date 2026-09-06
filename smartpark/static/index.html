@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>SmartPark · Parking Management System — Parking Availability</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🅿</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/user.css"/>
+  <script>
+    (function(){
+      var t=localStorage.getItem('sp-theme')||'dark';
+      document.documentElement.setAttribute('data-theme',t);
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ══ HEADER ═══════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect width="24" height="24" rx="6" fill="white"/>
+            <text x="5" y="18" font-size="14" font-weight="800" fill="#0f1923" font-family="sans-serif">P</text>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-name">SmartPark</span>
+          <span class="brand-campus">Parking Management System</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="live-badge">
+          <span class="live-ring"></span>
+          <span>LIVE</span>
+        </div>
+        <div class="refresh-info" id="refreshInfo">—</div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme">
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button class="admin-btn" id="adminBtn" title="Admin Login">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Admin</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ HERO STATS ════════════════════════════════════════ -->
+  <section class="hero-stats">
+    <div class="stats-row">
+      <div class="stat-box stat-avail">
+        <div class="stat-number" id="s-avail">—</div>
+        <div class="stat-label">Available</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-box stat-occ">
+        <div class="stat-number" id="s-occ">—</div>
+        <div class="stat-label">Occupied</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-box">
+        <div class="stat-number" id="s-total">—</div>
+        <div class="stat-label">Total</div>
+      </div>
+    </div>
+
+    <!-- Availability bar -->
+    <div class="avail-bar-wrap">
+      <div class="avail-bar-track">
+        <div class="avail-bar-fill" id="availBar"></div>
+      </div>
+      <span class="avail-pct" id="availPct">—% free</span>
+    </div>
+  </section>
+
+  <!-- ══ MAIN ══════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- No layout state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🗺️</div>
+      <h2>No Parking Map Available</h2>
+      <p>The admin hasn't uploaded the parking layout yet.<br/>Please check back soon.</p>
+    </div>
+
+    <!-- Map -->
+    <div class="map-container" id="mapContainer" style="display:none">
+      <div class="map-header">
+        <span class="map-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg>
+          Parking Layout Map
+        </span>
+        <span class="map-update" id="mapUpdate">Connecting…</span>
+      </div>
+
+      <div class="map-canvas" id="mapCanvas">
+        <img class="map-img" id="mapImg" src="" alt="Parking layout"/>
+        <!-- spot markers injected by JS -->
+      </div>
+
+      <div class="map-footer">
+        <div class="legend">
+          <span class="leg-item"><span class="leg-dot green"></span>Available</span>
+          <span class="leg-item"><span class="leg-dot red"></span>Occupied</span>
+        </div>
+        <span class="leg-tap">Tap spot for info</span>
+      </div>
+    </div>
+
+    <!-- Spot grid -->
+    <div class="spot-section" id="spotSection" style="display:none">
+      <div class="section-title">
+        <span>All Spots</span>
+        <span class="section-count" id="spotCount"></span>
+      </div>
+      <div class="spot-grid" id="spotGrid"></div>
+    </div>
+
+  </main>
+
+  <!-- ══ SPOT POPUP ════════════════════════════════════════ -->
+  <div class="popup-backdrop" id="popupBackdrop">
+    <div class="popup" id="popup">
+      <button class="popup-close" id="popupClose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="popup-spot-icon" id="popupIcon"></div>
+      <div class="popup-name" id="popupName">—</div>
+      <div class="popup-badge" id="popupBadge">—</div>
+      <div class="popup-meta" id="popupMeta"></div>
+    </div>
+  </div>
+
+  <!-- ══ TOAST ═════════════════════════════════════════════ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ══ ADMIN LOGIN MODAL ══════════════════════════════════ -->
+  <div class="admin-modal-backdrop" id="adminModalBackdrop">
+    <div class="admin-modal" id="adminModal">
+      <button class="admin-modal-close" id="adminModalClose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="admin-modal-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h2 class="admin-modal-title">Admin Access</h2>
+      <p class="admin-modal-sub">Enter the admin password to continue</p>
+      <div class="admin-modal-field">
+        <input
+          class="admin-modal-input"
+          id="adminPwInput"
+          type="password"
+          placeholder="Password"
+          maxlength="32"
+          autocomplete="current-password"
+        />
+        <button class="admin-modal-eye" id="adminEyeBtn" tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="adminEyeIcon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="admin-modal-error" id="adminModalError"></div>
+      <button class="admin-modal-submit" id="adminSubmitBtn">
+        <span id="adminSubmitText">Go to Admin Panel</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="/user.js"></script>
+</body>
+</html>
